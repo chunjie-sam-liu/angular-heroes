@@ -36,7 +36,7 @@ export class AddpostComponent implements OnInit {
       this.busy = false;
       console.log(res);
       this.router.navigate(['/']);
-    })
+    });
   }
 
   ngOnInit(): void {
