@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from __future__ import absolute_import, division, print_function, unicode_literals
+from flask import Flask, request, jsonify, url_for
 import json
 from flask_mysqldb import MySQL
 from flask_cors import CORS
@@ -6,6 +7,8 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 import pyrebase
+
+from markupsafe import escape
 
 # import pyrebase
 
@@ -60,13 +63,31 @@ def addpost():
       local_filename += filename_secure
 
       cur = mysql.connection.cursor()
-      cur.execute("""INSERT INTO flaskpoststut (title, content, cover, covername) VALUES (%s, %s, %s, %s)""", (title, content, filename_secure, filename_secure))
+      cur.execute("""INSERT INTO flaskpoststut (title, content, cover, covername) VALUES (%s, %s, %s, %s)""" % (title, content, filename_secure, filename_secure))
 
       return jsonify(data = 'The post was created successfully.')
 
+@app.route('/user/<username>')
+def show_user_profile(username):
+  return 'User %s' % escape(username)
 
 
+@app.route('/projects')
+def projects():
+  return 'The project page'
 
+@app.route('/about')
+def about():
+  return 'The about page'
+
+@app.route('/login', methods = ['GET', 'POST', 'PUT'])
+def login():
+  if request.method == 'POST':
+    return 'POST access'
+  elif request.method == 'GET':
+    return 'GET access'
+  else:
+    return cj
 
 if __name__ == '__main)__':
   app.run(debug=True)
