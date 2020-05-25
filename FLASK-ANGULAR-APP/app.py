@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, url_for, render_template
+from flask import Flask, request, jsonify, url_for, render_template, send_file
 from flask_restplus import Resource, Api, fields
 import json
 from bson import json_util
@@ -40,7 +40,21 @@ CORS(app)
 @app.route("/api/posts", methods = ['GET'])
 def index():
   if request.method == 'GET':
-    return jsonify(data = "post main response")
+    '''
+      Get all posts from MongoDB
+    '''
+    docs = mongo.db.flaskpoststut.find({}, {'_id': False})
+    # print('Type of docs is %s' % type(docs))
+    # print(docs)
+    # ds=json_util.dumps(docs)
+    # print('Type of ds is %s' % type(ds))
+    # print(ds)
+    # print('Type of docs is %s' % type(docs))
+    # lds=json.loads(ds)
+    # print('Type of lds is %s' % type(lds))
+    # print(lds)
+
+    return jsonify(data = list(docs))
 
 @app.route("/api/addpost", methods = ['POST'])
 def addpost():
@@ -57,7 +71,8 @@ def addpost():
       # secure name
       filename_secure = secure_filename(filename)
       # save the file inside uploads folder
-      cover.save(os.path.join(app.config["UPLOAD_FOLDER"], filename_secure))
+      local_filename = os.path.join(app.config["UPLOAD_FOLDER"], filename_secure)
+      cover.save(local_filename)
 
       mongo.db.flaskpoststut.insert({
       "title": title,
@@ -68,6 +83,19 @@ def addpost():
 
       return jsonify(data = 'The post was created successfully.')
 
+@app.route("/api/image/<filename>", methods = ['GET'])
+def get_image(filename=None):
+  if request.method == 'GET':
+    if filename is None:
+      return 'no image'
+    else:
+      filename = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+      if not os.path.exists(filename):
+        return 'No image'
+      else:
+        return send_file(filename, mimetype='image/gif')
+
+# not in use
 @app.route('/user/<username>')
 def show_user_profile(username):
   return 'User %s' % escape(username)
