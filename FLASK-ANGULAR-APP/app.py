@@ -1,12 +1,14 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-from flask import Flask, request, jsonify, url_for
+
+from flask import Flask, request, jsonify, url_for, render_template
+from flask_restplus import Resource, Api
 import json
-from flask_mysqldb import MySQL
+from bson import json_util
+# from flask_mysqldb import MySQL
+from flask_pymongo import PyMongo
 from flask_cors import CORS
 import os
 import uuid
 from werkzeug.utils import secure_filename
-import pyrebase
 
 from markupsafe import escape
 
@@ -23,12 +25,15 @@ def allowed_files(filename):
 
 app = Flask(__name__)
 #config
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# mysql = MySQL(app)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'flaskpoststut'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-mysql = MySQL(app)
+# mongodb
+app.config['MONGO_URI']='mongodb://localhost:27017/flaskpoststut'
+mongo=PyMongo(app)
 CORS(app)
 
 # firebase config
@@ -38,7 +43,7 @@ config = {}
 @app.route("/api/posts", methods = ['GET'])
 def index():
   if request.method == 'GET':
-    return jsonify(data = "post mian response")
+    return jsonify(data = "post main response")
 
 @app.route("/api/addpost", methods = ['POST'])
 def addpost():
@@ -82,12 +87,62 @@ def about():
 
 @app.route('/login', methods = ['GET', 'POST', 'PUT'])
 def login():
+  error = None
   if request.method == 'POST':
     return 'POST access'
   elif request.method == 'GET':
     return 'GET access'
   else:
-    return cj
+    return 'cj'
+
+@app.route('/hello')
+@app.route('/hello/<name>')
+def hello(name=None):
+
+  data = {
+    'cj': 'cj',
+    'iu': 'iu',
+    'name': name
+  }
+  # return data
+  return jsonify([data, 2,3, 4 ])
+
+api = Api(app)
+todos = {}
+
+@api.route('/todos/<string:todo_id>')
+class TodoSimple(Resource):
+  def get(self, todo_id):
+    return {todo_id: todos[todo_id]}
+
+  def put(self, todo_id):
+    todos[todo_id] = request.form['data']
+    print(todos)
+
+    return {todo_id: todos[todo_id]}
+
+@api.route('/test/mongodb')
+@api.route('/test/mongodb/<string:title>')
+class TestMongodb(Resource):
+  def get(self):
+
+    get_data = mongo.db.flaskpoststut.find()
+    print(type(get_data))
+    return jsonify(json.loads(json_util.dumps(get_data)))
+
+  def put(self, title):
+    title = request.form['title']
+    content = request.form['content']
+    cover = request.form['cover']
+    covername = request.form['covername']
+    _insert = mongo.db.flaskpoststut.insert({
+      "title": title,
+      "content": content,
+      "covername": covername,
+      "cover": cover
+    })
+    return jsonify(data = title)
+
 
 if __name__ == '__main)__':
   app.run(debug=True)
