@@ -83,7 +83,6 @@ def about():
 
 @app.route('/login', methods = ['GET', 'POST', 'PUT'])
 def login():
-  error = None
   if request.method == 'POST':
     return 'POST access'
   elif request.method == 'GET':
