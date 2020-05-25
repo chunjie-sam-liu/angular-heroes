@@ -1,6 +1,5 @@
-
 from flask import Flask, request, jsonify, url_for, render_template
-from flask_restplus import Resource, Api
+from flask_restplus import Resource, Api, fields
 import json
 from bson import json_util
 # from flask_mysqldb import MySQL
@@ -9,7 +8,7 @@ from flask_cors import CORS
 import os
 import uuid
 from werkzeug.utils import secure_filename
-
+from werkzeug.contrib.fixers import ProxyFix
 from markupsafe import escape
 
 # import pyrebase
@@ -36,8 +35,6 @@ app.config['MONGO_URI']='mongodb://localhost:27017/flaskpoststut'
 mongo=PyMongo(app)
 CORS(app)
 
-# firebase config
-config = {}
 
 
 @app.route("/api/posts", methods = ['GET'])
@@ -48,7 +45,6 @@ def index():
 @app.route("/api/addpost", methods = ['POST'])
 def addpost():
   if request.method == 'POST':
-
     title = request.form.get('title')
     content = request.form.get('content')
     cover = request.files['cover']
@@ -63,12 +59,12 @@ def addpost():
       # save the file inside uploads folder
       cover.save(os.path.join(app.config["UPLOAD_FOLDER"], filename_secure))
 
-      # local file
-      local_filename = "./uploads/"
-      local_filename += filename_secure
-
-      cur = mysql.connection.cursor()
-      cur.execute("""INSERT INTO flaskpoststut (title, content, cover, covername) VALUES (%s, %s, %s, %s)""" % (title, content, filename_secure, filename_secure))
+      mongo.db.flaskpoststut.insert({
+      "title": title,
+      "content": content,
+      "covername": filename_secure,
+      "cover": filename_secure
+      })
 
       return jsonify(data = 'The post was created successfully.')
 
@@ -107,22 +103,11 @@ def hello(name=None):
   # return data
   return jsonify([data, 2,3, 4 ])
 
+
 api = Api(app)
-todos = {}
-
-@api.route('/todos/<string:todo_id>')
-class TodoSimple(Resource):
-  def get(self, todo_id):
-    return {todo_id: todos[todo_id]}
-
-  def put(self, todo_id):
-    todos[todo_id] = request.form['data']
-    print(todos)
-
-    return {todo_id: todos[todo_id]}
-
-@api.route('/test/mongodb')
-@api.route('/test/mongodb/<string:title>')
+# test mongdb
+@api.route('/testm/mongodb')
+@api.route('/testm/mongodb/<string:title>')
 class TestMongodb(Resource):
   def get(self):
 
