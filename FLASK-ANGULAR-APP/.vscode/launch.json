@@ -5,13 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Angular",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:4200",
-      "webRoot": "${workspaceFolder}/angularposts"
-    },
-    {
       "name": "Python: Flask",
       "type": "python",
       "request": "launch",
