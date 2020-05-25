@@ -95,7 +95,13 @@ def get_image(filename=None):
       else:
         return send_file(filename, mimetype='image/gif')
 
-# not in use
+@app.route('/api/post/<title>', methods=['GET'])
+def singlepost(title):
+  record = mongo.db.flaskpoststut.find_one({'title': title}, {'_id': False})
+  return jsonify(data = dict(record))
+
+
+# not in use ------------
 @app.route('/user/<username>')
 def show_user_profile(username):
   return 'User %s' % escape(username)
