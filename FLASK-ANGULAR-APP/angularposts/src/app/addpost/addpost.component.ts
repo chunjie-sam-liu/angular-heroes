@@ -26,6 +26,7 @@ export class AddpostComponent implements OnInit {
   });
 
   public handleInput($event: Event) {
+    // tslint:disable-next-line: no-string-literal
     this.image = $event.target['files'];
     console.log(this.image);
   }

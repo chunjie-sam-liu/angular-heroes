@@ -1,1 +1,18 @@
-<p>main works!</p>
+<header>
+  <div><img class="logo" src="../../assets/cj.png" alt=""></div>
+  <h1>Angular Flas Posts</h1>
+  <p>Powered by Angular 9 / Flask / MongoDB</p>
+</header>
+
+
+<div class="postContainer">
+  <div class="post" *ngFor="let post of posts">
+    <h2>{{post.title}}</h2>
+    <!-- <a [routerLink]="['/posts', post[0]]">
+      <img src="{{post[3]}}" />
+    </a> -->
+    <img src="{{getImage(post.covername)}}" alt="{{post.covername}}">
+    <p>{{post.covername}}</p>
+    <p>{{post.content}}</p>
+  </div>
+</div>
