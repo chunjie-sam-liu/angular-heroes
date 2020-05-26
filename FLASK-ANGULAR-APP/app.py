@@ -145,7 +145,6 @@ class TestMongodb(Resource):
   def get(self):
 
     get_data = mongo.db.flaskpoststut.find()
-    print(type(get_data))
     return jsonify(json.loads(json_util.dumps(get_data)))
 
   def put(self, title):
