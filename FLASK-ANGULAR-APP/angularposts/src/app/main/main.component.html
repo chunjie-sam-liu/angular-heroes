@@ -11,7 +11,9 @@
     <!-- <a [routerLink]="['/posts', post[0]]">
       <img src="{{post[3]}}" />
     </a> -->
-    <img src="{{getImage(post.covername)}}" alt="{{post.covername}}">
+    <a [routerLink]="['/post', post.title]">
+      <img src="{{getImage(post.covername)}}" alt="{{post.covername}}" width="100">
+    </a>
     <p>{{post.covername}}</p>
     <p>{{post.content}}</p>
   </div>
