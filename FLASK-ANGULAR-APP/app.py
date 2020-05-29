@@ -36,9 +36,12 @@ mongo=PyMongo(app)
 CORS(app)
 
 
+@app.route("/", methods = ['GET'])
+def index():
+  return render_template('index.html')
 
 @app.route("/api/posts", methods = ['GET'])
-def index():
+def listPosts():
   if request.method == 'GET':
     '''
       Get all posts from MongoDB
