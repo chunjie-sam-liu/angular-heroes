@@ -4,7 +4,7 @@ import { AddpostComponent } from './addpost.component';
 
 const routes: Routes = [
   {path: '', component: AddpostComponent},
-]
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
