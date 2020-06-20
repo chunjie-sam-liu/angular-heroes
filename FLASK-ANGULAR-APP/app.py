@@ -36,9 +36,12 @@ mongo=PyMongo(app)
 CORS(app)
 
 
+@app.route("/", methods = ['GET'])
+def index():
+  return render_template('index.html')
 
 @app.route("/api/posts", methods = ['GET'])
-def index():
+def listPosts():
   if request.method == 'GET':
     '''
       Get all posts from MongoDB
@@ -145,7 +148,6 @@ class TestMongodb(Resource):
   def get(self):
 
     get_data = mongo.db.flaskpoststut.find()
-    print(type(get_data))
     return jsonify(json.loads(json_util.dumps(get_data)))
 
   def put(self, title):

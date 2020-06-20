@@ -1,0 +1,7 @@
+@hostname=http://localhost:5000/api
+
+GET {{hostname}}/posts
+
+
+###
+GET {{hostname}}/post/a

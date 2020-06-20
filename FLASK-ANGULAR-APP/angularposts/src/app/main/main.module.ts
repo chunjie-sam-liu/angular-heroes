@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
+import { AboutComponent } from './about/about.component';
 
 
 
@@ -12,6 +13,6 @@ import { MainComponent } from './main.component';
     CommonModule,
     MainRoutingModule
   ],
-  declarations: [MainComponent]
+  declarations: [MainComponent, AboutComponent]
 })
 export class MainModule { }
